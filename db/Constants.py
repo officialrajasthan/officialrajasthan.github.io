@@ -1,0 +1,1 @@
+FDR_URL = "https://finance.rajasthan.gov.in/website/SearchOrders.aspx"
