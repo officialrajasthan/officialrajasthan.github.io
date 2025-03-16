@@ -1,16 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-  <div id="app" class="p-6 text-center">
-    <h1 class="text-3xl font-bold text-blue-600">{{ message }}</h1>
-  </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue SPA on GitHub Pages</title>
   
-  <script>
-    Vue.createApp({ data() { return { message: "Hello GitHub Pages!" }; } }).mount("#app");
-  </script>
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="style/style.css">
+
+  <!-- Vue.js & Vue Router CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js" defer></script>
+
+  <!-- App Scripts -->
+  <script src="script/app.js" defer></script>
+  <script src="pages/home.js" defer></script>
+  <script src="pages/about.js" defer></script>
+  <script src="pages/contact.js" defer></script>
+  <script src="pages/table.js" defer></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex justify-center"> <!-- items-center -->
+  
+  <div id="app" class="w-full max-w-3xl p-6 bg-white shadow-lg rounded-lg">
+    
+    <!-- Logo Section -->
+    <div class="text-center">
+        <div class="logo-text">UnOfficial Rajasthan Channel</div>
+        <div class="sub-text">For Rajasthan Goverment Related Activity</div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="flex justify-around border-b pb-3 mb-4">
+      <router-link to="/" class="text-blue-600 hover:underline">Home</router-link>
+      <router-link to="/table" class="text-blue-600 hover:underline">Table</router-link>
+      <router-link to="/about" class="text-blue-600 hover:underline">About</router-link>
+      <router-link to="/contact" class="text-blue-600 hover:underline">Contact</router-link>
+
+    </nav>
+
+    <!-- Page Content -->
+    <router-view></router-view>
+
+  </div>
 </body>
 </html>
