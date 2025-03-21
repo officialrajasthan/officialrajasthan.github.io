@@ -8,6 +8,7 @@ const TablePage = {
       searchQuery: "",
       sortColumn: null,
       sortDirection: "asc",
+      searching: false,  // Track if search is active
     };
   },
   computed: {
@@ -37,10 +38,20 @@ const TablePage = {
     },
     searchTable() {
       const query = this.searchQuery.toLowerCase();
-      this.filteredData = this.tableData.filter(row =>
-        row.some(cell => cell.toLowerCase().includes(query))
-      );
+      if (query.trim() === "") {
+        this.filteredData = this.tableData;
+        this.searching = false; // Show everything when search is empty
+      } else {
+        this.filteredData = this.tableData.filter(row =>
+          row.some(cell => cell.toLowerCase().includes(query))
+        );
+        this.searching = true; // Hide unnecessary elements
+      }
       this.currentPage = 1;
+    },
+    clearSearch() {
+      this.searchQuery = "";
+      this.searchTable();
     },
     sortTable(columnIndex) {
       if (this.sortColumn === columnIndex) {
@@ -70,17 +81,24 @@ const TablePage = {
   },
   template: `
     <div class="text-center">
-      <h1 class="text-3xl font-bold text-gray-800">Enhanced Table</h1>
+      <!-- Hide Heading when Searching -->
+      <h1 v-if="!searching" class="text-3xl font-bold text-gray-800">Enhanced Table</h1>
 
-     <!-- Search Box -->
-<div class="mt-4 mb-4 flex justify-center">
-  <input v-model="searchQuery" @input="searchTable"
-    class="px-6 py-3 border border-gray-400 rounded-lg w-3/4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    placeholder="🔍 Search for records..." />
-</div>
+      <!-- Search Box -->
+      <div class="mt-4 mb-4 flex justify-center relative">
+        <input v-model="searchQuery" @input="searchTable"
+          class="px-6 py-3 border border-gray-400 rounded-lg w-3/4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="🔍 Search for records..." />
+
+        <!-- Clear Button -->
+        <button v-if="searchQuery" @click="clearSearch"
+          class="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800">
+          ✖
+        </button>
+      </div>
 
       <!-- Table -->
-      <div class="overflow-x-auto">
+      <div v-if="filteredData.length > 0" class="overflow-x-auto">
         <table class="min-w-full border border-gray-300 bg-white shadow-md rounded-lg">
           <thead class="bg-gray-800 text-white">
             <tr>
@@ -103,12 +121,17 @@ const TablePage = {
         </table>
       </div>
 
-      <!-- Pagination -->
-      <div class="flex justify-center items-center space-x-2 mt-4">
+      <!-- Pagination (Hidden during Search) -->
+      <div v-if="!searching && totalPages > 1" class="flex justify-center items-center space-x-2 mt-4">
         <button @click="changePage(currentPage - 1)" class="px-4 py-2 bg-gray-200 rounded-md">Prev</button>
         <span class="text-lg font-bold">{{ currentPage }} / {{ totalPages }}</span>
         <button @click="changePage(currentPage + 1)" class="px-4 py-2 bg-gray-200 rounded-md">Next</button>
       </div>
+
+      <!-- No Results Found Message -->
+      <p v-if="searching && filteredData.length === 0" class="text-red-600 font-semibold mt-4">
+        No matching records found. Try a different search!
+      </p>
     </div>
   `,
 };
